@@ -86,12 +86,12 @@
     .result-meta b { display:block; margin-top:4px; color:var(--ink); font:500 16px/1 Arial,sans-serif; }
     .result-copy { margin:14px 0 0; font-size:12px; line-height:1.25; }
     .result-contribution { margin:10px 0 0; color:var(--pink); }
-    .result-note { margin:10px 0 14px; color:var(--muted); font-size:9px; line-height:1.3; text-transform:none; letter-spacing:0; }
     .result-actions { display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-top:auto; }
     .result-actions button { min-height:34px; padding:7px; border:1px solid var(--line); background:#111; cursor:pointer; font:500 9px/1.15 "Courier New",monospace; letter-spacing:.06em; text-transform:uppercase; }
     .result-actions button:hover, .result-actions button:focus-visible { border-color:var(--pink); color:var(--pink); }
     .result-actions .primary { background:var(--pink); color:#080808; border-color:var(--pink); }
     .result-actions .primary:hover, .result-actions .primary:focus-visible { background:var(--yellow); color:#080808; border-color:var(--yellow); }
+    .result-actions #play-again { grid-column:1 / -1; }
     .result-status { min-height:1.2em; margin:7px 0 0; color:var(--muted); font-size:8px; }
     .game-foot { display:grid; grid-template-columns:1fr 1fr 1fr; border-top:1px solid var(--soft-line); }
     .stat { padding:8px 2px 0; }
@@ -177,11 +177,9 @@
               </div>
               <p class="result-copy" id="result-copy">Every system begins with a move.</p>
               <p class="result-contribution micro" id="result-contribution"></p>
-              <p class="result-note">Share your trace and tag @glina__3. Shared traces may be selected for a monthly ceramic study.</p>
               <div class="result-actions">
                 <button class="primary" id="share-trace" type="button">Share trace</button>
-                <button id="save-story" type="button">Save story</button>
-                <button id="save-feed" type="button">Save feed</button>
+                <button id="save-story" type="button">Save 9:16</button>
                 <button id="play-again" type="button">Play again</button>
               </div>
               <p class="result-status micro" id="result-status"></p>
@@ -395,7 +393,7 @@
       var by=story?1530:1110;
       g.fillStyle='#f2f0ec';g.font='500 '+(story?42:34)+'px Arial';g.fillText(traceTier.copy,70,by);
       g.fillStyle='#ff75b5';g.font='500 23px Courier New';g.fillText(pieces+' MODULE'+(pieces===1?'':'S')+' ADDED TO THE COLLECTIVE REBUILD',70,by+62);
-      g.fillStyle='#8b8986';g.font='500 20px Courier New';g.fillText('CREATED AT GLINA3.NL  ·  @GLINA__3  ·  #GLINASTACKTRACE',70,h-82);
+      g.fillStyle='#8b8986';g.font='500 20px Courier New';g.fillText('GLINA³ / CREATIVE TECHNOLOGIES / AMSTERDAM  ·  GLINA3.NL',70,h-82);
       return out;
     }
     function downloadTrace(format){
@@ -412,7 +410,7 @@
       out.toBlob(async function(blob){
         if(!blob)return;
         var file=new File([blob],'GLINA3-Stack-Trace-'+traceId+'.png',{type:'image/png'});
-        var data={title:'GLINA³ Stack Trace '+traceId,text:'I added '+pieces+' modules to the GLINA³ Collective Rebuild. @glina__3 #GLINAStackTrace',files:[file]};
+        var data={title:'GLINA³ Stack Trace '+traceId,text:'Every system begins with a move. GLINA³ / Creative Technologies / Amsterdam · glina3.nl',files:[file]};
         try{
           if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share(data);resultStatus.textContent='TRACE SHARED.';}
           else downloadTrace('story');
@@ -425,7 +423,6 @@
     pauseScreen.addEventListener('click',togglePause);
     document.getElementById('share-trace').addEventListener('click',shareTrace);
     document.getElementById('save-story').addEventListener('click',function(){downloadTrace('story');});
-    document.getElementById('save-feed').addEventListener('click',function(){downloadTrace('feed');});
     document.getElementById('play-again').addEventListener('click',begin);
     document.addEventListener('keydown',function(e){
       if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' ','z','Z','x','X','p','P'].includes(e.key))e.preventDefault();
