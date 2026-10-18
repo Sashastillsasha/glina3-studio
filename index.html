@@ -160,7 +160,7 @@
       </section>
 
       <section class="game-panel" aria-labelledby="game-label">
-        <div class="game-head micro"><span id="game-label">A small game while you wait</span><div class="game-tools"><span>02—03</span><button class="pause-button" id="pause" type="button">Pause</button></div></div>
+        <div class="game-head micro"><span id="game-label">A small game while you wait</span><div class="game-tools"><span id="today-best">Best 0000</span><span>02—03</span><button class="pause-button" id="pause" type="button">Pause</button></div></div>
         <div class="game-wrap">
           <div class="game-frame">
             <canvas id="tetris" width="220" height="396" aria-label="Playable Tetris-style block game"></canvas>
@@ -256,9 +256,27 @@
     var resultCopy=document.getElementById('result-copy');
     var resultContribution=document.getElementById('result-contribution');
     var resultStatus=document.getElementById('result-status');
+    var todayBestEl=document.getElementById('today-best');
     var traceBoard=null,traceId='',traceTier=null;
+    function bestKey(){return 'glina3-best-'+dailyDay.key;}
+    function readBest(){try{return Number(localStorage.getItem(bestKey())||0);}catch(e){return 0;}}
+    function writeBest(v){try{localStorage.setItem(bestKey(),String(v));}catch(e){}}
+    function renderBest(v){todayBestEl.textContent='Best '+String(v).padStart(4,'0');}
     var COLS=10, ROWS=18, SIZE=22;
-    var colors=['','#f2f0ec','#ff75b5','#e9ff54','#7698b9','#c6a5ff','#ef8f61','#8c8b87'];
+    function amsterdamDay(){
+      var p=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Amsterdam',day:'2-digit',month:'2-digit',year:'numeric'}).formatToParts(new Date());
+      var o={};p.forEach(function(x){if(x.type!=='literal')o[x.type]=x.value;});
+      return{key:o.year+'-'+o.month+'-'+o.day,label:o.day+'.'+o.month+'.'+o.year,number:Number(o.year+o.month+o.day)};
+    }
+    var dailyDay=amsterdamDay();
+    var dailyPalettes=[
+      ['','#f2f0ec','#ff75b5','#e9ff54','#7698b9','#c6a5ff','#ef8f61','#8c8b87'],
+      ['','#f4f1e9','#ff8ac0','#deff66','#6f91b5','#bfa7ff','#f19a72','#96938d'],
+      ['','#ebe8e0','#ff65ac','#f0ff72','#83a4c4','#d0afff','#e88262','#7d7c79'],
+      ['','#f7f2ed','#f77fba','#e4f75d','#688bab','#b99eea','#f3a07b','#92908c']
+    ];
+    var dailyPaletteIndex=dailyDay.number%dailyPalettes.length;
+    var colors=dailyPalettes[dailyPaletteIndex];
     var shapes=[
       [[1,1,1,1]],
       [[1,1],[1,1]],
@@ -328,10 +346,11 @@
     }
     function update(){scoreEl.textContent=String(score).padStart(4,'0');linesEl.textContent=String(lines).padStart(2,'0');levelEl.textContent=String(level).padStart(2,'0');}
     function getTier(n){
-      if(n>=15)return{name:'PROTOTYPE',copy:'A temporary system becomes a possible object.',rank:3};
-      if(n>=8)return{name:'TOOLPATH',copy:'A rule becomes material.',rank:2};
-      if(n>=3)return{name:'PATTERN',copy:'Repetition becomes structure.',rank:1};
-      return{name:'RAW',copy:'Every system begins with a move.',rank:0};
+      var copy='Every system begins with a move';
+      if(n>=15)return{name:'PROTOTYPE',copy:copy,rank:3};
+      if(n>=8)return{name:'TOOLPATH',copy:copy,rank:2};
+      if(n>=3)return{name:'PATTERN',copy:copy,rank:1};
+      return{name:'RAW',copy:copy,rank:0};
     }
     function makeTraceId(){
       var h=2166136261;
@@ -342,14 +361,13 @@
     function showResult(){
       traceBoard=board.map(function(r){return r.slice();});
       traceTier=getTier(lines);traceId=makeTraceId();
-      var stored=0;
-      try{stored=Number(localStorage.getItem('glina3-rebuild-modules')||0)+pieces;localStorage.setItem('glina3-rebuild-modules',String(stored));}catch(e){stored=pieces;}
+      var best=Math.max(readBest(),score);writeBest(best);renderBest(best);
       resultTier.textContent=traceTier.name+' / TRACE '+traceId;
       resultScore.textContent=String(score).padStart(4,'0');
       resultLines.textContent=String(lines).padStart(2,'0');
       resultLevel.textContent=String(level).padStart(2,'0');
       resultCopy.textContent=traceTier.copy;
-      resultContribution.textContent='YOU ADDED '+pieces+' MODULE'+(pieces===1?'':'S')+' · YOUR REBUILD TOTAL '+stored;
+      resultContribution.textContent=pieces+' MODULE'+(pieces===1?'':'S')+' ADDED · TODAY’S BEST '+String(best).padStart(4,'0');
       resultStatus.textContent='';
       resultPanel.classList.remove('hidden');
     }
@@ -372,18 +390,13 @@
       g.fillStyle='#f2f0ec';g.font='700 38px Arial';g.fillText('GLINA³',70,84);
       g.fillStyle='#ff75b5';g.font='500 24px Courier New';g.fillText('COLLECTIVE REBUILD / STACK TRACE',70,128);
       g.fillStyle='#f2f0ec';g.font='500 '+(story?76:64)+'px Arial';g.fillText('TRACE '+traceId,70,story?235:215);
-      g.fillStyle='#8b8986';g.font='500 23px Courier New';g.fillText(traceTier.name+'  ·  '+String(lines).padStart(2,'0')+' LINES  ·  '+String(score).padStart(4,'0')+' SCORE',70,story?286:260);
+      g.fillStyle='#8b8986';g.font='500 23px Courier New';g.fillText(dailyDay.label+'  ·  '+traceTier.name+'  ·  '+String(lines).padStart(2,'0')+' LINES  ·  '+String(score).padStart(4,'0')+' SCORE',70,story?286:260);
       var maxW=w-140,maxH=story?980:690,cs=Math.floor(Math.min(maxW/COLS,maxH/ROWS));
       var gx=Math.floor((w-COLS*cs)/2),gy=story?360:315;
       g.strokeStyle='rgba(242,240,236,.11)';g.lineWidth=1;
       for(var xx=0;xx<=COLS;xx++){g.beginPath();g.moveTo(gx+xx*cs,gy);g.lineTo(gx+xx*cs,gy+ROWS*cs);g.stroke();}
       for(var yy=0;yy<=ROWS;yy++){g.beginPath();g.moveTo(gx,gy+yy*cs);g.lineTo(gx+COLS*cs,gy+yy*cs);g.stroke();}
-      var palettes=[
-        ['#f2f0ec','#ff75b5','#b8b5b0','#d8d5cf','#8b8986','#f2f0ec','#ff75b5'],
-        ['#f2f0ec','#ff75b5','#e9ff54','#7698b9','#c6a5ff','#ef8f61','#8c8b87'],
-        ['#f2f0ec','#ff75b5','#e9ff54','#7698b9','#c6a5ff','#ef8f61','#a4d4bc'],
-        ['#ffffff','#ff75b5','#e9ff54','#8db7df','#d4b5ff','#ff9b6d','#a4e0c2']
-      ],pal=palettes[traceTier.rank];
+      var pal=colors.slice(1);
       traceBoard.forEach(function(r,y){r.forEach(function(v,x){if(!v)return;
         var px=gx+x*cs,py=gy+y*cs;
         if(traceTier.rank>=2){g.fillStyle='rgba(0,0,0,.48)';g.fillRect(px+8,py+9,cs-5,cs-5);}
@@ -400,7 +413,7 @@
       var out=traceCanvas(format);
       out.toBlob(function(blob){
         if(!blob)return;
-        var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='GLINA3-Stack-Trace-'+traceId+'-'+format+'.png';a.click();
+        var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='GLINA3-Stack-Trace-'+dailyDay.key+'-'+traceId+'-'+format+'.png';a.click();
         setTimeout(function(){URL.revokeObjectURL(a.href);},1000);
         resultStatus.textContent=(format==='story'?'STORY':'FEED')+' TRACE SAVED.';
       },'image/png');
@@ -409,7 +422,7 @@
       var out=traceCanvas('story');
       out.toBlob(async function(blob){
         if(!blob)return;
-        var file=new File([blob],'GLINA3-Stack-Trace-'+traceId+'.png',{type:'image/png'});
+        var file=new File([blob],'GLINA3-Stack-Trace-'+dailyDay.key+'-'+traceId+'.png',{type:'image/png'});
         var data={title:'GLINA³ Stack Trace '+traceId,text:'Every system begins with a move. GLINA³ / Creative Technologies / Amsterdam · glina3.nl',files:[file]};
         try{
           if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share(data);resultStatus.textContent='TRACE SHARED.';}
@@ -430,7 +443,7 @@
       if(e.key==='ArrowLeft')move(-1);else if(e.key==='ArrowRight')move(1);else if(e.key==='ArrowUp'||e.key==='x'||e.key==='X')rotate();else if(e.key==='ArrowDown')down();else if(e.key===' ')drop();
     });
     document.querySelectorAll('[data-key]').forEach(function(b){b.addEventListener('click',function(){var k=b.dataset.key;if(k==='left')move(-1);if(k==='right')move(1);if(k==='rotate')rotate();if(k==='down')down();if(k==='drop')drop();});});
-    board=empty();score=0;lines=0;level=1;pieces=0;piece={m:[[1,1,1],[0,1,0]],x:3,y:6,c:2};update();draw();raf=requestAnimationFrame(tick);
+    board=empty();score=0;lines=0;level=1;pieces=0;piece={m:[[1,1,1],[0,1,0]],x:3,y:6,c:2};renderBest(readBest());update();draw();raf=requestAnimationFrame(tick);
   })();
   </script>
 </body>
