@@ -75,6 +75,23 @@
     .pause-screen strong { font-size:clamp(24px,3vw,38px); line-height:.9; letter-spacing:-.055em; font-weight:500; text-transform:uppercase; }
     .pause-screen span { display:block; margin-top:8px; color:var(--pink); }
     .pause-screen.hidden { display:none; }
+    .result-panel { position:absolute; inset:0; z-index:4; display:flex; flex-direction:column; padding:18px; background:rgba(5,5,5,.96); overflow:auto; }
+    .result-panel.hidden { display:none; }
+    .result-kicker { color:var(--pink); margin-bottom:12px; }
+    .result-panel h2 { margin:0; font-size:29px; line-height:.88; letter-spacing:-.055em; font-weight:500; text-transform:uppercase; }
+    .result-tier { margin:10px 0 0; color:var(--yellow); }
+    .result-meta { display:grid; grid-template-columns:repeat(3,1fr); gap:5px; margin-top:16px; padding:10px 0; border-top:1px solid var(--soft-line); border-bottom:1px solid var(--soft-line); }
+    .result-meta span { color:var(--muted); }
+    .result-meta b { display:block; margin-top:4px; color:var(--ink); font:500 16px/1 Arial,sans-serif; }
+    .result-copy { margin:14px 0 0; font-size:12px; line-height:1.25; }
+    .result-contribution { margin:10px 0 0; color:var(--pink); }
+    .result-note { margin:10px 0 14px; color:var(--muted); font-size:9px; line-height:1.3; text-transform:none; letter-spacing:0; }
+    .result-actions { display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-top:auto; }
+    .result-actions button { min-height:34px; padding:7px; border:1px solid var(--line); background:#111; cursor:pointer; font:500 9px/1.15 "Courier New",monospace; letter-spacing:.06em; text-transform:uppercase; }
+    .result-actions button:hover, .result-actions button:focus-visible { border-color:var(--pink); color:var(--pink); }
+    .result-actions .primary { background:var(--pink); color:#080808; border-color:var(--pink); }
+    .result-actions .primary:hover, .result-actions .primary:focus-visible { background:var(--yellow); color:#080808; border-color:var(--yellow); }
+    .result-status { min-height:1.2em; margin:7px 0 0; color:var(--muted); font-size:8px; }
     .game-foot { display:grid; grid-template-columns:1fr 1fr 1fr; border-top:1px solid var(--soft-line); }
     .stat { padding:8px 2px 0; }
     .stat:nth-child(2) { text-align:center; }
@@ -148,6 +165,26 @@
             <canvas id="tetris" width="220" height="396" aria-label="Playable Tetris-style block game"></canvas>
             <button class="start" id="start" type="button"><span><strong>Tap to play</strong>← → to move<br>↑ to rotate · ↓ to drop</span></button>
             <button class="pause-screen hidden" id="pause-screen" type="button"><strong>Paused</strong><span class="micro">Tap to resume</span></button>
+            <div class="result-panel hidden" id="result-panel" role="dialog" aria-live="polite" aria-label="Your GLINA³ Stack Trace">
+              <div class="result-kicker micro">Collective Rebuild</div>
+              <h2>Your stack became a trace</h2>
+              <div class="result-tier micro" id="result-tier">Raw / Trace 0000</div>
+              <div class="result-meta micro">
+                <span>Score<b id="result-score">0000</b></span>
+                <span>Lines<b id="result-lines">00</b></span>
+                <span>Level<b id="result-level">01</b></span>
+              </div>
+              <p class="result-copy" id="result-copy">Every system begins with a move.</p>
+              <p class="result-contribution micro" id="result-contribution"></p>
+              <p class="result-note">Share your trace and tag @glina__3. Shared traces may be selected for a monthly ceramic study.</p>
+              <div class="result-actions">
+                <button class="primary" id="share-trace" type="button">Share trace</button>
+                <button id="save-story" type="button">Save story</button>
+                <button id="save-feed" type="button">Save feed</button>
+                <button id="play-again" type="button">Play again</button>
+              </div>
+              <p class="result-status micro" id="result-status"></p>
+            </div>
           </div>
         </div>
         <div>
@@ -212,6 +249,15 @@
     var scoreEl=document.getElementById('score');
     var linesEl=document.getElementById('lines');
     var levelEl=document.getElementById('level');
+    var resultPanel=document.getElementById('result-panel');
+    var resultTier=document.getElementById('result-tier');
+    var resultScore=document.getElementById('result-score');
+    var resultLines=document.getElementById('result-lines');
+    var resultLevel=document.getElementById('result-level');
+    var resultCopy=document.getElementById('result-copy');
+    var resultContribution=document.getElementById('result-contribution');
+    var resultStatus=document.getElementById('result-status');
+    var traceBoard=null,traceId='',traceTier=null;
     var COLS=10, ROWS=18, SIZE=22;
     var colors=['','#f2f0ec','#ff75b5','#e9ff54','#7698b9','#c6a5ff','#ef8f61','#8c8b87'];
     var shapes=[
@@ -281,12 +327,104 @@
       draw();raf=requestAnimationFrame(tick);
     }
     function update(){scoreEl.textContent=String(score).padStart(4,'0');linesEl.textContent=String(lines).padStart(2,'0');levelEl.textContent=String(level).padStart(2,'0');}
-    function begin(){board=empty();score=0;lines=0;level=1;running=true;paused=false;last=performance.now();pauseButton.textContent='Pause';pauseScreen.classList.add('hidden');start.classList.add('hidden');start.innerHTML='<span><strong>Tap to play</strong>← → to move<br>↑ to rotate · ↓ to drop</span>';spawn();update();canvas.focus();}
-    function end(){running=false;paused=false;pauseButton.textContent='Pause';pauseScreen.classList.add('hidden');start.classList.remove('hidden');start.innerHTML='<span><strong>Stack ended</strong><span>Score '+score+'</span><br>tap to try again</span>';}
+    function getTier(n){
+      if(n>=15)return{name:'PROTOTYPE',copy:'A temporary system becomes a possible object.',rank:3};
+      if(n>=8)return{name:'TOOLPATH',copy:'A rule becomes material.',rank:2};
+      if(n>=3)return{name:'PATTERN',copy:'Repetition becomes structure.',rank:1};
+      return{name:'RAW',copy:'Every system begins with a move.',rank:0};
+    }
+    function makeTraceId(){
+      var h=2166136261;
+      traceBoard.forEach(function(r){r.forEach(function(v){h^=v+1;h=Math.imul(h,16777619);});});
+      h^=score;h=Math.imul(h,16777619);h^=lines;
+      return (h>>>0).toString(16).toUpperCase().padStart(8,'0').slice(0,6);
+    }
+    function showResult(){
+      traceBoard=board.map(function(r){return r.slice();});
+      traceTier=getTier(lines);traceId=makeTraceId();
+      var stored=0;
+      try{stored=Number(localStorage.getItem('glina3-rebuild-layers')||0)+lines;localStorage.setItem('glina3-rebuild-layers',String(stored));}catch(e){stored=lines;}
+      resultTier.textContent=traceTier.name+' / TRACE '+traceId;
+      resultScore.textContent=String(score).padStart(4,'0');
+      resultLines.textContent=String(lines).padStart(2,'0');
+      resultLevel.textContent=String(level).padStart(2,'0');
+      resultCopy.textContent=traceTier.copy;
+      resultContribution.textContent='YOU ADDED '+lines+' LAYER'+(lines===1?'':'S')+' · YOUR REBUILD TOTAL '+stored;
+      resultStatus.textContent='';
+      resultPanel.classList.remove('hidden');
+    }
+    function begin(){
+      board=empty();score=0;lines=0;level=1;running=true;paused=false;last=performance.now();
+      pauseButton.textContent='Pause';pauseScreen.classList.add('hidden');resultPanel.classList.add('hidden');start.classList.add('hidden');
+      start.innerHTML='<span><strong>Tap to play</strong>← → to move<br>↑ to rotate · ↓ to drop</span>';
+      spawn();update();canvas.focus();
+    }
+    function end(){
+      running=false;paused=false;pauseButton.textContent='Pause';pauseScreen.classList.add('hidden');start.classList.add('hidden');showResult();
+    }
+    function traceCanvas(format){
+      var story=format==='story',w=1080,h=story?1920:1350,out=document.createElement('canvas'),g=out.getContext('2d');
+      out.width=w;out.height=h;
+      g.fillStyle='#080808';g.fillRect(0,0,w,h);
+      var glow=g.createRadialGradient(w*.72,h*.16,0,w*.72,h*.16,w*.62);
+      glow.addColorStop(0,'rgba(255,117,181,.16)');glow.addColorStop(1,'rgba(8,8,8,0)');
+      g.fillStyle=glow;g.fillRect(0,0,w,h);
+      g.fillStyle='#f2f0ec';g.font='700 38px Arial';g.fillText('GLINA³',70,84);
+      g.fillStyle='#ff75b5';g.font='500 24px Courier New';g.fillText('COLLECTIVE REBUILD / STACK TRACE',70,128);
+      g.fillStyle='#f2f0ec';g.font='500 '+(story?76:64)+'px Arial';g.fillText('TRACE '+traceId,70,story?235:215);
+      g.fillStyle='#8b8986';g.font='500 23px Courier New';g.fillText(traceTier.name+'  ·  '+String(lines).padStart(2,'0')+' LINES  ·  '+String(score).padStart(4,'0')+' SCORE',70,story?286:260);
+      var maxW=w-140,maxH=story?980:690,cs=Math.floor(Math.min(maxW/COLS,maxH/ROWS));
+      var gx=Math.floor((w-COLS*cs)/2),gy=story?360:315;
+      g.strokeStyle='rgba(242,240,236,.11)';g.lineWidth=1;
+      for(var xx=0;xx<=COLS;xx++){g.beginPath();g.moveTo(gx+xx*cs,gy);g.lineTo(gx+xx*cs,gy+ROWS*cs);g.stroke();}
+      for(var yy=0;yy<=ROWS;yy++){g.beginPath();g.moveTo(gx,gy+yy*cs);g.lineTo(gx+COLS*cs,gy+yy*cs);g.stroke();}
+      var palettes=[
+        ['#f2f0ec','#ff75b5','#b8b5b0','#d8d5cf','#8b8986','#f2f0ec','#ff75b5'],
+        ['#f2f0ec','#ff75b5','#e9ff54','#7698b9','#c6a5ff','#ef8f61','#8c8b87'],
+        ['#f2f0ec','#ff75b5','#e9ff54','#7698b9','#c6a5ff','#ef8f61','#a4d4bc'],
+        ['#ffffff','#ff75b5','#e9ff54','#8db7df','#d4b5ff','#ff9b6d','#a4e0c2']
+      ],pal=palettes[traceTier.rank];
+      traceBoard.forEach(function(r,y){r.forEach(function(v,x){if(!v)return;
+        var px=gx+x*cs,py=gy+y*cs;
+        if(traceTier.rank>=2){g.fillStyle='rgba(0,0,0,.48)';g.fillRect(px+8,py+9,cs-5,cs-5);}
+        g.fillStyle=pal[(v-1)%pal.length];g.fillRect(px+2,py+2,cs-4,cs-4);
+        g.strokeStyle='rgba(8,8,8,.26)';g.strokeRect(px+3,py+3,cs-6,cs-6);
+      });});
+      var by=story?1530:1110;
+      g.fillStyle='#f2f0ec';g.font='500 '+(story?42:34)+'px Arial';g.fillText(traceTier.copy,70,by);
+      g.fillStyle='#ff75b5';g.font='500 23px Courier New';g.fillText(lines+' LAYER'+(lines===1?'':'S')+' ADDED TO THE COLLECTIVE REBUILD',70,by+62);
+      g.fillStyle='#8b8986';g.font='500 20px Courier New';g.fillText('CREATED AT GLINA3.NL  ·  @GLINA__3  ·  #GLINASTACKTRACE',70,h-82);
+      return out;
+    }
+    function downloadTrace(format){
+      var out=traceCanvas(format);
+      out.toBlob(function(blob){
+        if(!blob)return;
+        var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='GLINA3-Stack-Trace-'+traceId+'-'+format+'.png';a.click();
+        setTimeout(function(){URL.revokeObjectURL(a.href);},1000);
+        resultStatus.textContent=(format==='story'?'STORY':'FEED')+' TRACE SAVED.';
+      },'image/png');
+    }
+    function shareTrace(){
+      var out=traceCanvas('story');
+      out.toBlob(async function(blob){
+        if(!blob)return;
+        var file=new File([blob],'GLINA3-Stack-Trace-'+traceId+'.png',{type:'image/png'});
+        var data={title:'GLINA³ Stack Trace '+traceId,text:'I added '+lines+' layers to the GLINA³ Collective Rebuild. @glina__3 #GLINAStackTrace',files:[file]};
+        try{
+          if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share(data);resultStatus.textContent='TRACE SHARED.';}
+          else downloadTrace('story');
+        }catch(e){if(e.name!=='AbortError')downloadTrace('story');}
+      },'image/png');
+    }
     function togglePause(){if(!running)return;paused=!paused;pauseButton.textContent=paused?'Resume':'Pause';pauseScreen.classList.toggle('hidden',!paused);if(!paused)last=performance.now();}
     start.addEventListener('click',begin);
     pauseButton.addEventListener('click',togglePause);
     pauseScreen.addEventListener('click',togglePause);
+    document.getElementById('share-trace').addEventListener('click',shareTrace);
+    document.getElementById('save-story').addEventListener('click',function(){downloadTrace('story');});
+    document.getElementById('save-feed').addEventListener('click',function(){downloadTrace('feed');});
+    document.getElementById('play-again').addEventListener('click',begin);
     document.addEventListener('keydown',function(e){
       if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' ','z','Z','x','X','p','P'].includes(e.key))e.preventDefault();
       if(e.key==='p'||e.key==='P'){togglePause();return;}
