@@ -33,11 +33,12 @@
 
     .site { min-height: 100svh; padding: 24px 28px 18px; display:grid; grid-template-rows:auto 1fr auto; gap:18px; }
     .micro { font: 500 10.5px/1.25 "IBM Plex Sans Condensed", Arial, sans-serif; letter-spacing:.04em; text-transform:uppercase; }
-    .topbar { display:grid; grid-template-columns:auto auto auto 1fr; gap:34px; border-bottom:1px solid var(--line); padding:0 0 13px; align-items:center; }
+    .topbar { display:grid; grid-template-columns:auto 1fr auto auto; gap:34px; border-bottom:1px solid var(--line); padding:0 0 13px; align-items:center; }
     .topbar .brand { font-weight:700; letter-spacing:-.04em; }
-    .topbar .navitem { color:var(--ink); }
-    .topbar .navitem:hover { color:var(--blue); }
-    .topbar .place { justify-self:end; color:var(--muted); }
+    .topbar .what { color:var(--muted); }
+    .topbar .place { color:var(--muted); }
+    .topbar .order { justify-self:end; border-bottom:1px solid var(--line); padding-bottom:2px; }
+    .topbar .order:hover { color:var(--blue); border-color:var(--blue); }
 
     .main { min-height:0; display:grid; grid-template-columns:minmax(0, 1.08fr) minmax(330px, .92fr); gap:12px; }
     .message, .game-panel { min-height:680px; background:transparent; }
@@ -119,7 +120,7 @@
     @media (max-width: 850px) {
       .site { padding:10px; gap:10px; }
       .topbar { grid-template-columns:1fr auto; gap:14px; }
-      .topbar .navitem { display:none; }
+      .topbar .what, .topbar .place { display:none; }
       .main, .bottom { grid-template-columns:1fr; gap:8px; }
       .message { min-height:74svh; }
       h1 { margin-top:10vh; max-width:20ch; font-size:clamp(34px,10vw,52px); line-height:1.02; }
@@ -139,10 +140,9 @@
   <div class="site">
     <header class="topbar">
       <div class="brand">GLINA³</div>
-      <a class="navitem" href="mailto:office@glina3.nl?subject=Objects">Objects</a>
-      <a class="navitem" href="mailto:office@glina3.nl?subject=Production">Production</a>
-      <a class="navitem" href="mailto:office@glina3.nl?subject=Research">Research</a>
+      <div class="what">Objects / Production / Research</div>
       <div class="place">Amsterdam / NL</div>
+      <a class="order" href="mailto:office@glina3.nl?subject=GLINA³%20order%20or%20project%20enquiry">Order ↗</a>
     </header>
 
     <main class="main">
