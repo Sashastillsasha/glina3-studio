@@ -4,13 +4,13 @@
 
 ## Seller details to verify
 
-- Registered business name: GLINA³ VOF [verify exact spelling against KvK]
-- Trade name: GLINA³
-- Address: Rustenburgerstraat 236, 1073 GK Amsterdam, The Netherlands [verify]
-- KvK: 98443933 [verify]
-- VAT ID: NL868497812B01 [verify]
+- Registered business name: GLINA3 (verified against KvK extract issued 23 October 2026)
+- Trade name: GLINA3 (displayed as GLINA³)
+- Business address: Artemisstraat 150, 1076 DW Amsterdam, The Netherlands (verified against KvK extract issued 23 October 2026)
+- KvK: 98443933 (verified)
+- VAT ID: NL868497812B01 (supported by GLINA³ invoices; recheck against current Belastingdienst record)
 - Email: office@glina3.nl
-- Telephone: [add customer service number]
+- Telephone: [add customer service number; no number found in current records]
 
 ## Current website
 
