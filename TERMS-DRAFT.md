@@ -10,7 +10,7 @@
 - KvK: 98443933 (verified)
 - VAT ID: NL868497812B01 (supported by GLINA³ invoices; recheck against current Belastingdienst record)
 - Email: office@glina3.nl
-- Telephone: [add customer service number; no number found in current records]
+- Telephone: +31 6 5769 4723
 
 ## Current website
 
