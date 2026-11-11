@@ -47,7 +47,10 @@
     .index-row { display:flex; justify-content:space-between; color:var(--muted); }
     h1 { margin:11vh 0 0; max-width:21ch; font-size:clamp(34px,3.3vw,48px); line-height:1.03; letter-spacing:-.035em; font-weight:450; text-transform:none; }
     .lower { display:grid; grid-template-columns:minmax(220px, .9fr) minmax(220px,.72fr); gap:clamp(48px,6vw,96px); align-items:end; }
-    .intro { max-width:46ch; margin:0 0 18px; font-size:clamp(16px,1.2vw,18px); line-height:1.42; letter-spacing:-.01em; }
+    .intro { max-width:34ch; margin:0 0 18px; font-size:clamp(14px,1vw,16px); line-height:1.28; letter-spacing:-.01em; }
+    .intro p { margin:0; }
+    .intro p + p { margin-top:16px; }
+    .intro-label { display:block; margin-bottom:5px; color:var(--blue); font-size:10.5px; line-height:1.25; }
     .signup { padding-top:0; }
     .signup label { display:block; margin-bottom:18px; color:var(--muted); }
     .formline { display:grid; grid-template-columns:1fr auto; border-bottom:1px solid var(--ink); }
@@ -149,7 +152,7 @@
       <section class="message" aria-labelledby="page-title">
         <h1 id="page-title">GLINA³ is an Amsterdam-based design studio specialising in ceramic 3D printing. We develop an original visual language for clay, translating digital patterns into printed surfaces, objects and spatial experiments.</h1>
         <div class="lower">
-          <div class="intro"><p style="margin:0 0 20px"><span class="micro" style="display:block;margin-bottom:8px;color:var(--blue)">Website / status</span>We are currently rebuilding our website</p><p style="margin:0"><span class="micro" style="display:block;margin-bottom:8px;color:var(--blue)">Custom work / collaborations</span>Our digital patterns take physical form in clay, where code, material and touch meet. We welcome enquiries for custom ceramic surfaces and objects, as well as collaborations</p></div>
+          <div class="intro"><p><span class="micro intro-label">Introduction</span>We translate digital patterns into clay through ceramic 3D printing</p><p><span class="micro intro-label">Website status</span>We are currently rebuilding our website</p><p><span class="micro intro-label">Custom work / collaborations</span>We welcome enquiries for custom surfaces, objects and collaborations</p></div>
           <form class="signup" id="signup">
             <label class="micro" for="email">Studio updates / releases / invitations</label>
             <div class="formline">
