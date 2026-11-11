@@ -43,7 +43,7 @@
     .main { min-height:0; display:grid; grid-template-columns:minmax(0, 1.08fr) minmax(330px, .92fr); gap:12px; }
     .message, .game-panel { min-height:680px; background:transparent; }
     .game-panel { border-left:1px solid var(--line); background:transparent; color:var(--ink); }
-    .message { display:grid; grid-template-rows:auto auto 1fr auto; padding:2px 20px 0 0; }
+    .message { display:grid; grid-template-rows:auto 1fr auto; padding:2px 20px 0 0; }
     .index-row { display:flex; justify-content:space-between; color:var(--muted); }
     h1 { margin:11vh 0 0; max-width:21ch; font-size:clamp(29px,2.7vw,39px); line-height:1.08; letter-spacing:-.035em; font-weight:450; text-transform:none; }
     .studio-copy { max-width:66ch; margin-top:20px; font-size:clamp(14px,1vw,16px); line-height:1.4; letter-spacing:-.01em; color:var(--muted); }
@@ -152,8 +152,7 @@
 
     <main class="main">
       <section class="message" aria-labelledby="page-title">
-        <h1 id="page-title">GLINA³ is an Amsterdam-based design studio specialising in ceramic 3D printing. We develop an original visual language for clay, translating digital patterns into printed surfaces, objects and spatial experiments.</h1>
-        <div class="studio-copy"><p>Through our studio-developed pipeline of digital construction, print parameters and material experiments, we translate digital patterns into clay. In collaboration, we bring this language into contact with other materials, processes and forms of knowledge.</p><p>We explore how digital production becomes physical experience. Our work also asks how the materials, tools and knowledge available around us can shape what we make — and what new forms and visual languages can emerge from those conditions.</p></div>
+        <h1 id="page-title">GLINA³ is an Amsterdam-based design studio specialising in ceramic 3D printing. We explore how digital production becomes physical experience. Our work asks how the materials, tools and knowledge available locally around us can shape what we make — and what new forms and visual languages can emerge from those conditions.</h1>
         <div class="lower">
           <div class="intro"><p><span class="micro intro-label">Introduction</span>We translate digital patterns into clay through ceramic 3D printing</p><p><span class="micro intro-label">Website status</span>We are currently rebuilding our website</p><p><span class="micro intro-label">Custom work / collaborations</span>We welcome enquiries for custom surfaces, objects and collaborations</p></div>
           <form class="signup" id="signup">
