@@ -45,13 +45,13 @@
     .game-panel { border-left:1px solid var(--line); background:transparent; color:var(--ink); }
     .message { display:grid; grid-template-rows:auto 1fr auto; padding:2px 20px 0 0; }
     .index-row { display:flex; justify-content:space-between; color:var(--muted); }
-    h1 { margin:11vh 0 0; max-width:21ch; font-size:clamp(29px,2.7vw,39px); line-height:1.08; letter-spacing:-.035em; font-weight:450; text-transform:none; }
+    h1 { margin:7vh 0 0; max-width:48ch; font-size:clamp(24px,2.15vw,32px); line-height:1.12; letter-spacing:-.035em; font-weight:450; text-transform:none; }
     .studio-copy { max-width:66ch; margin-top:20px; font-size:clamp(14px,1vw,16px); line-height:1.4; letter-spacing:-.01em; color:var(--muted); }
     .studio-copy p { margin:0 0 10px; }
-    .lower { display:grid; grid-template-columns:minmax(220px, .9fr) minmax(220px,.72fr); gap:clamp(48px,6vw,96px); align-items:end; }
-    .intro { max-width:34ch; margin:0 0 18px; font-size:clamp(14px,1vw,16px); line-height:1.28; letter-spacing:-.01em; }
+    .lower { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:clamp(24px,4vw,56px); align-items:end; }
+    .intro { max-width:38ch; margin:0 0 18px; font-size:clamp(14px,1vw,16px); line-height:1.32; letter-spacing:-.01em; }
     .intro p { margin:0; }
-    .intro p + p { margin-top:16px; }
+    .intro p + p { margin-top:18px; }
     .intro-label { display:block; margin-bottom:5px; color:var(--blue); font-size:10.5px; line-height:1.25; }
     .signup { padding-top:0; }
     .signup label { display:block; margin-bottom:18px; color:var(--muted); }
@@ -61,7 +61,7 @@
     .formline button { padding:8px 0 8px 14px; background:none; border:0; cursor:pointer; text-transform:uppercase; }
     .formline button:hover, .formline button:focus-visible { color:var(--pink); }
     .formnote { min-height:2.4em; margin:8px 0 0; color:var(--muted); }
-    .consent { margin-top:9px; display:grid; grid-template-columns:auto 1fr; gap:7px; align-items:start; color:var(--muted); text-transform:none; letter-spacing:0; }
+    .consent { margin-top:9px; display:grid; grid-template-columns:auto 1fr; gap:13px; align-items:start; color:var(--muted); text-transform:none; letter-spacing:0; }
     .consent input { accent-color:var(--pink); margin:1px 0 0; }
 
     .game-panel { display:grid; grid-template-rows:auto 1fr auto; padding:10px; overflow:hidden; }
@@ -128,7 +128,7 @@
       .topbar .what, .topbar .place { display:none; }
       .main, .bottom { grid-template-columns:1fr; gap:8px; }
       .message { min-height:74svh; }
-      h1 { margin-top:10vh; max-width:20ch; font-size:clamp(29px,8vw,42px); line-height:1.08; }
+      h1 { margin-top:10vh; max-width:20ch; font-size:clamp(24px,7vw,36px); line-height:1.12; }
       .lower { grid-template-columns:1fr; gap:18px; }
       .game-panel { min-height:690px; }
       .game-frame { width:min(68vw,244px); }
@@ -154,7 +154,7 @@
       <section class="message" aria-labelledby="page-title">
         <h1 id="page-title">GLINA³ is an Amsterdam-based design studio specialising in ceramic 3D printing. We explore how digital production becomes physical experience. Our work asks how the materials, tools and knowledge available locally around us can shape what we make — and what new forms and visual languages can emerge from those conditions.</h1>
         <div class="lower">
-          <div class="intro"><p><span class="micro intro-label">Introduction</span>We translate digital patterns into clay through ceramic 3D printing</p><p><span class="micro intro-label">Website status</span>We are currently rebuilding our website</p><p><span class="micro intro-label">Custom work / collaborations</span>We welcome enquiries for custom surfaces, objects and collaborations</p></div>
+          <div class="intro"><p><span class="micro intro-label">Website status</span>We are currently rebuilding our website</p><p><span class="micro intro-label">Custom work / collaborations</span>We welcome enquiries for custom surfaces, objects and collaborations</p></div>
           <form class="signup" id="signup">
             <label class="micro" for="email">Studio updates / releases / invitations</label>
             <div class="formline">
