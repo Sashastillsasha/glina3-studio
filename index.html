@@ -43,9 +43,10 @@
     .main { min-height:0; display:grid; grid-template-columns:minmax(0, 1.08fr) minmax(330px, .92fr); gap:12px; }
     .message, .game-panel { min-height:680px; background:transparent; }
     .game-panel { border-left:1px solid var(--line); background:transparent; color:var(--ink); }
-    .message { display:grid; grid-template-rows:auto 1fr auto; padding:2px 20px 0 0; }
+    .message { display:grid; grid-template-rows:auto auto 1fr auto; padding:2px 20px 0 0; }
     .index-row { display:flex; justify-content:space-between; color:var(--muted); }
     h1 { margin:7vh 0 0; max-width:48ch; font-size:clamp(24px,2.15vw,32px); line-height:1.12; letter-spacing:-.035em; font-weight:450; text-transform:none; }
+    .research-line { max-width:48ch; margin:24px 0 0; font-size:clamp(16px,1.35vw,21px); line-height:1.35; letter-spacing:-.015em; font-style:italic; color:var(--muted); }
     .studio-copy { max-width:66ch; margin-top:20px; font-size:clamp(14px,1vw,16px); line-height:1.4; letter-spacing:-.01em; color:var(--muted); }
     .studio-copy p { margin:0 0 10px; }
     .lower { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:clamp(24px,4vw,56px); align-items:end; }
@@ -152,7 +153,8 @@
 
     <main class="main">
       <section class="message" aria-labelledby="page-title">
-        <h1 id="page-title">GLINA³ is an Amsterdam-based design studio specialising in ceramic 3D printing.<br>We have developed our own digital-to-clay pipeline, translating original patterns into print paths, extrusion rhythms and ceramic surfaces.<br>We explore how today’s conditions of making — local craft knowledge, online knowledge, available materials, tools and the logistics that connect them — shape what we can make and the visual language that emerges.</h1>
+        <h1 id="page-title">GLINA³ is an Amsterdam-based design studio specialising in ceramic 3D printing.<br>We have developed our own digital-to-clay pipeline, translating original patterns into print paths, extrusion rhythms and ceramic surfaces.</h1>
+        <p class="research-line">We explore how the knowledge, materials and tools available to us today — through local practices, digital culture and the logistics that connect them — shape what we can make and the visual language that emerges from it</p>
         <div class="lower">
           <div class="intro"><p><span class="micro intro-label">Website status</span>We are currently rebuilding our website</p><p><span class="micro intro-label">Custom work / collaborations</span>We welcome enquiries for custom surfaces, objects and collaborations</p></div>
           <form class="signup" id="signup">
