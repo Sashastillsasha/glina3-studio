@@ -355,7 +355,7 @@
       pieces++;
       var cleared=0;
       for(var y=ROWS-1;y>=0;y--)if(board[y].every(Boolean)){board.splice(y,1);board.unshift(Array(COLS).fill(0));cleared++;y++;}
-      if(cleared){lines+=cleared;score+=[0,100,300,500,800][cleared]*level;level=1+Math.floor(lines/10);}
+      if(cleared){lines+=cleared;score+=[0,100,300,500,800][cleared]*level;level=1+Math.floor(lines/10);if(piece){piece.y+=cleared;while(hit(piece,0,0)&&piece.y>-piece.m.length)piece.y--;}}
       score+=25;update();
     }
     function hit(p,ox,oy,m){
