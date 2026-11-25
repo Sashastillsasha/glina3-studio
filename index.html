@@ -292,14 +292,7 @@
       return{key:o.year+'-'+o.month+'-'+o.day,label:o.day+'.'+o.month+'.'+o.year,number:Number(o.year+o.month+o.day)};
     }
     var dailyDay=amsterdamDay();
-    var dailyPalettes=[
-      ['','#ff9ecf','#ff55ad','#eaff74','#86dfff','#c9a0ff','#ffad78','#b5f5d1'],
-      ['','#ffc0dc','#ff78bd','#f2ff8a','#8fe8ff','#d9b8ff','#ffc38e','#c9f7e2'],
-      ['','#ffafd8','#ff67b3','#edff7a','#79d5ff','#c3a0ff','#ffa77b','#a9f0d0'],
-      ['','#ffd0e6','#ff8fc8','#f4ff9b','#a0eaff','#e0c5ff','#ffca9b','#d3f8e8']
-    ];
-    var dailyPaletteIndex=dailyDay.number%dailyPalettes.length;
-    var colors=dailyPalettes[dailyPaletteIndex];
+    var colors=['','#16a765','#0d8f5b','#39c98b','#21a99b','#63d7b6','#7bcb68','#39b8c5'];
     var shapes=[
       [[1,1,1,1]],
       [[1,1],[1,1]],
@@ -348,7 +341,7 @@
     }
     function drop(){if(!running||paused)return;while(!hit(piece,0,1)){piece.y++;score+=2;}merge();update();}
     function shade(hex,amt){var n=parseInt(hex.slice(1),16),r=(n>>16)+amt,g=((n>>8)&255)+amt,bl=(n&255)+amt;return 'rgb('+Math.max(0,Math.min(255,r))+','+Math.max(0,Math.min(255,g))+','+Math.max(0,Math.min(255,bl))+')';}
-    function block(g,x,y,size,color,alpha){g.save();g.globalAlpha=alpha==null?1:alpha;var pad=Math.max(1,size*.08),px=x*size+pad,py=y*size+pad,w=size-2*pad;g.shadowColor='rgba(0,0,0,.48)';g.shadowBlur=size*.16;g.shadowOffsetY=size*.12;g.fillStyle=shade(color,-28);g.fillRect(px,py,w,w);g.shadowColor='transparent';g.shadowOffsetY=0;g.fillStyle=color;g.fillRect(px,py,w,w);g.fillStyle=shade(color,48);g.beginPath();g.moveTo(px,py);g.lineTo(px+w,py);g.lineTo(px+w-size*.18,py+size*.18);g.lineTo(px+size*.18,py+size*.18);g.closePath();g.fill();g.fillStyle=shade(color,-52);g.beginPath();g.moveTo(px+w,py);g.lineTo(px+w,py+w);g.lineTo(px+w-size*.18,py+w-size*.18);g.lineTo(px+w-size*.18,py+size*.18);g.closePath();g.fill();g.strokeStyle='rgba(255,255,255,.42)';g.lineWidth=Math.max(.6,size*.035);g.strokeRect(px+size*.08,py+size*.08,w-size*.16,w-size*.16);g.restore();}
+    function block(g,x,y,size,color,alpha){g.save();g.globalAlpha=alpha==null?1:alpha;var pad=Math.max(1,size*.08),px=x*size+pad,py=y*size+pad,w=size-2*pad;g.shadowColor='rgba(0,0,0,.48)';g.shadowBlur=size*.16;g.shadowOffsetY=size*.12;g.fillStyle=shade(color,-28);g.fillRect(px,py,w,w);g.shadowColor='transparent';g.shadowOffsetY=0;g.fillStyle=color;g.fillRect(px,py,w,w);g.fillStyle=shade(color,38);g.beginPath();g.moveTo(px,py);g.lineTo(px+w,py);g.lineTo(px+w-size*.22,py+size*.18);g.lineTo(px+size*.18,py+size*.18);g.closePath();g.fill();g.fillStyle=shade(color,-62);g.beginPath();g.moveTo(px+w,py);g.lineTo(px+w,py+w);g.lineTo(px+w-size*.18,py+w-size*.18);g.lineTo(px+w-size*.18,py+size*.18);g.closePath();g.fill();g.strokeStyle='rgba(255,255,255,.30)';g.lineWidth=Math.max(.6,size*.035);g.strokeRect(px+size*.08,py+size*.08,w-size*.16,w-size*.16);g.restore();}
     function cell(x,y,c,alpha){block(ctx,x,y,SIZE,colors[c],alpha);}
     function draw(){
       ctx.fillStyle='#050505';ctx.fillRect(0,0,canvas.width,canvas.height);
