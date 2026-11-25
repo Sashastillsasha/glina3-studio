@@ -291,10 +291,10 @@
     }
     var dailyDay=amsterdamDay();
     var dailyPalettes=[
-      ['','#f2f0ec','#ff75b5','#e9ff54','#7698b9','#c6a5ff','#ef8f61','#8c8b87'],
-      ['','#f4f1e9','#ff8ac0','#deff66','#6f91b5','#bfa7ff','#f19a72','#96938d'],
-      ['','#ebe8e0','#ff65ac','#f0ff72','#83a4c4','#d0afff','#e88262','#7d7c79'],
-      ['','#f7f2ed','#f77fba','#e4f75d','#688bab','#b99eea','#f3a07b','#92908c']
+      ['','#ff9ecf','#ff55ad','#eaff74','#86dfff','#c9a0ff','#ffad78','#b5f5d1'],
+      ['','#ffc0dc','#ff78bd','#f2ff8a','#8fe8ff','#d9b8ff','#ffc38e','#c9f7e2'],
+      ['','#ffafd8','#ff67b3','#edff7a','#79d5ff','#c3a0ff','#ffa77b','#a9f0d0'],
+      ['','#ffd0e6','#ff8fc8','#f4ff9b','#a0eaff','#e0c5ff','#ffca9b','#d3f8e8']
     ];
     var dailyPaletteIndex=dailyDay.number%dailyPalettes.length;
     var colors=dailyPalettes[dailyPaletteIndex];
@@ -311,7 +311,7 @@
     var rescueButton=document.getElementById("rescue-button"),rescueShape=null,rescueUsed=false;
     function empty(){ return Array.from({length:ROWS},function(){return Array(COLS).fill(0);}); }
     function fillQueue(){while(queue.length<3)queue.push(Math.floor(Math.random()*shapes.length));}
-    function drawMini(g,cv,index,slot){if(index===null)return;var m=shapes[index],cell=Math.min(13,(cv.width-8)/m[0].length,34/m.length),ox=(cv.width-m[0].length*cell)/2,oy=slot==null?(cv.height-m.length*cell)/2:slot*48+(40-m.length*cell)/2;g.fillStyle=colors[index+1];m.forEach(function(row,y){row.forEach(function(v,x){if(v)g.fillRect(ox+x*cell+1,oy+y*cell+1,cell-2,cell-2);});});}
+    function drawMini(g,cv,index,slot){if(index===null)return;var m=shapes[index],size=Math.min(13,(cv.width-8)/m[0].length,34/m.length),ox=(cv.width-m[0].length*size)/2,oy=slot==null?(cv.height-m.length*size)/2:slot*48+(40-m.length*size)/2;m.forEach(function(row,y){row.forEach(function(v,x){if(v)block(g,ox/size+x,oy/size+y,size,colors[index+1],1);});});}
     function updatePreviews(){holdCtx.clearRect(0,0,holdCanvas.width,holdCanvas.height);if(held!==null)drawMini(holdCtx,holdCanvas,held);nextCtx.clearRect(0,0,nextCanvas.width,nextCanvas.height);queue.slice(0,3).forEach(function(i,n){drawMini(nextCtx,nextCanvas,i,n);});}
     function spawn(){fillQueue();var i=queue.shift();fillQueue();piece={m:shapes[i].map(function(r){return r.slice();}),x:Math.floor((COLS-shapes[i][0].length)/2),y:0,c:i+1};holdLocked=false;updatePreviews();if(hit(piece,0,0))end();else findRescueShape();}
     function holdPiece(){if(!running||paused||holdLocked)return;var current=piece.c-1;if(held===null){held=current;spawn();}else{var swap=held;held=current;piece={m:shapes[swap].map(function(r){return r.slice();}),x:Math.floor((COLS-shapes[swap][0].length)/2),y:0,c:swap+1};updatePreviews();if(hit(piece,0,0))end();}holdLocked=true;}
@@ -391,11 +391,9 @@
       score++; update();
     }
     function drop(){if(!running||paused)return;while(!hit(piece,0,1)){piece.y++;score+=2;}merge();update();}
-    function cell(x,y,c,alpha){
-      ctx.globalAlpha=alpha==null?1:alpha;
-      ctx.fillStyle=colors[c]; ctx.fillRect(x*SIZE+1,y*SIZE+1,SIZE-2,SIZE-2);
-      ctx.strokeStyle='rgba(8,8,8,.24)';ctx.strokeRect(x*SIZE+1.5,y*SIZE+1.5,SIZE-3,SIZE-3);ctx.globalAlpha=1;
-    }
+    function shade(hex,amt){var n=parseInt(hex.slice(1),16),r=(n>>16)+amt,g=((n>>8)&255)+amt,bl=(n&255)+amt;return 'rgb('+Math.max(0,Math.min(255,r))+','+Math.max(0,Math.min(255,g))+','+Math.max(0,Math.min(255,bl))+')';}
+    function block(g,x,y,size,color,alpha){g.save();g.globalAlpha=alpha==null?1:alpha;var pad=Math.max(1,size*.08),px=x*size+pad,py=y*size+pad,w=size-2*pad;g.shadowColor='rgba(0,0,0,.48)';g.shadowBlur=size*.16;g.shadowOffsetY=size*.12;g.fillStyle=shade(color,-28);g.fillRect(px,py,w,w);g.shadowColor='transparent';g.shadowOffsetY=0;g.fillStyle=color;g.fillRect(px,py,w,w);g.fillStyle=shade(color,48);g.beginPath();g.moveTo(px,py);g.lineTo(px+w,py);g.lineTo(px+w-size*.18,py+size*.18);g.lineTo(px+size*.18,py+size*.18);g.closePath();g.fill();g.fillStyle=shade(color,-52);g.beginPath();g.moveTo(px+w,py);g.lineTo(px+w,py+w);g.lineTo(px+w-size*.18,py+w-size*.18);g.lineTo(px+w-size*.18,py+size*.18);g.closePath();g.fill();g.strokeStyle='rgba(255,255,255,.42)';g.lineWidth=Math.max(.6,size*.035);g.strokeRect(px+size*.08,py+size*.08,w-size*.16,w-size*.16);g.restore();}
+    function cell(x,y,c,alpha){block(ctx,x,y,SIZE,colors[c],alpha);}
     function draw(){
       ctx.fillStyle='#050505';ctx.fillRect(0,0,canvas.width,canvas.height);
       ctx.strokeStyle='rgba(242,240,236,.055)';ctx.lineWidth=1;
