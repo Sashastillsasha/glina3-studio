@@ -260,9 +260,7 @@
       var email=document.getElementById('email').value.trim();
       if(!email || !document.getElementById('consent').checked) return;
       note.textContent='OPENING YOUR EMAIL APP — SEND THE DRAFT TO JOIN.';
-      window.location.href='mailto:office@glina3.nl?subject='+encodeURIComponent('GLINA³ website update')+'&body='+encodeURIComponent('Please add '+email+' to the GLINA³ website update list.
-
-I consent to receive occasional studio updates and understand I can unsubscribe at any time.');
+      window.location.href='mailto:office@glina3.nl?subject='+encodeURIComponent('GLINA³ website update')+'&body='+encodeURIComponent('Please add '+email+' to the GLINA³ website update list.\n\nI consent to receive occasional studio updates and understand I can unsubscribe at any time.');
     });
 
     var canvas=document.getElementById('tetris');
